@@ -1,0 +1,55 @@
+﻿@page "{anime?}"
+@using AnimeFlix.Pages
+@using Microsoft.AspNetCore.Http
+@model AnimeModel
+@{
+    ViewData["Title"] = "Anime";
+    ViewData["Header"] = "Anime";
+    ViewData["Breadcrumbs"] = new Dictionary<string, string>
+    {
+        {"Anime", ""}
+    };
+}
+<form class="form-inline my-2 my-lg-0">
+    <div class="form-group">
+        @{
+            var options = new List<SelectListItem>
+            {
+                new SelectListItem {Text = "AnimeDao", Value = "AnimeDao", Selected = HttpContext.Request.Cookies["AnimeProvider"] == "AnimeDao"},
+                new SelectListItem {Text = "AnimeTwist", Value = "AnimeTwist", Selected = HttpContext.Request.Cookies["AnimeProvider"] == "AnimeTwist"}
+            };
+        }
+        <label class="custom-control">@Html.DropDownList("provider", options, new {@class = "custom-select form-control-sm"})</label>
+    </div>
+    <div class="form-group">
+        <label class="custom-control">
+            <input class="form-control form-control-sm" id="searchString" type="text" name="anime" placeholder="Search"/>
+        </label>
+        <label class="custom-control">
+            <input class="btn btn-primary btn-sm" id="buttonSearch" type="submit" value="Search"/>
+        </label>
+    </div>
+
+</form>
+<br/>
+<div class="container-fluid">
+    <div class="row">
+        @foreach (var item in Model.AnimeResults.Select((value, i) => new {i, value}))
+        {
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mt-4">
+                <div class="card h-100">
+                    <a href="Episodes?anime=@Model.Anime&id=@item.i&provider=@Model.Provider">
+                        <img class="card-img-top" src="@item.value.KitsuSearchResult.Attributes.PosterImage.Small" alt="@item.value.KitsuSearchResult.Attributes.CanonicalTitle">
+                    </a>
+                    <div class="text-center">
+                        <a href="Episodes?anime=@Model.Anime&id=@item.i&provider=@Model.Provider">
+                            @item.value.KitsuSearchResult.Attributes.CanonicalTitle
+                        </a>
+                    </div>
+                </div>
+            </div>
+            //<a class="list-group-item" href="Episodes?anime=@Model.Anime&id=@item.i&provider=@Model.Provider">@item.value.Name</a>
+        }
+    </div>
+
+</div>

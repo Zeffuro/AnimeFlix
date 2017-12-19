@@ -1,0 +1,33 @@
+﻿@page "{anime?}"
+@model AnimeFlix.Pages.EpisodesModel
+@{
+    ViewData["Title"] = "Episodes";
+    ViewData["Header"] = $"{Model.AnimeTitle} - Episodes";
+    ViewData["Breadcrumbs"] = new Dictionary<string, string>
+    {
+        { "Anime", "Anime"},
+        { Model.AnimeTitle, ""}
+    };
+}
+<br />
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-4 col-xl-3">
+            <img class="img-fluid rounded" src="@Model.Kitsu.Attributes.PosterImage.Large" alt="@Model.Kitsu.Attributes.CanonicalTitle"/>
+        </div>
+        <div class="col col-md-8 col-xl-9">
+            <h2>@Model.Kitsu.Attributes.CanonicalTitle</h2>
+            <span class="align-text-bottom">
+                @Model.Kitsu.Attributes.Synopsis
+            </span>
+        </div>
+    </div>
+</div>
+<br/>
+<div class="list-group">
+    @foreach (var item in Model.EpisodeResults.Select((value, i) => new { i, value }))
+    {
+        <a class="list-group-item" href="Watch?anime=@Model.Anime&animeid=@Model.AnimeId&episodeid=@item.i&provider=@Model.Provider">@item.value.Title @(string.IsNullOrEmpty(item.value.Description) ? "" : $"- {item.value.Description}")</a>
+    }
+</div>

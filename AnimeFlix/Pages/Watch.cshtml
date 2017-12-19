@@ -1,0 +1,91 @@
+﻿@page "{anime?}"
+@using System.Text.RegularExpressions
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Extensions
+@model AnimeFlix.Pages.WatchModel
+@{
+    ViewData["Title"] = $"Watching {Model.AnimeTitle} - {Model.EpisodeTitle}";
+    ViewData["Header"] = Model.EpisodeTitle;
+    ViewData["Breadcrumbs"] = new Dictionary<string, string>
+    {
+        {"Anime", "Anime"},
+        {Model.AnimeTitle, $"Episodes?anime={Uri.EscapeDataString(Model.Anime)}&id={Model.AnimeId}&provider={Model.Provider}"},
+        {Model.EpisodeTitle, ""}
+    };
+
+    var previousUrl = Regex.Replace(HttpContext.Request.GetDisplayUrl(), "episodeid=.*?&", $"episodeid={Model.EpisodePrev}&");
+    var nextUrl = Regex.Replace(HttpContext.Request.GetDisplayUrl(), "episodeid=.*?&", $"episodeid={Model.EpisodeNext}&");
+}
+<script>
+    function copyText() {
+        var text = document.getElementById("episodeSource");
+        text.style.display = 'block';
+        text.focus();
+        document.execCommand('SelectAll');
+        document.execCommand("Copy", false, null);
+        text.style.display = 'none';
+    }
+
+    function makeFullScreen(divObj) {
+        if (!document.fullscreenElement && // alternative standard method
+            !document.mozFullScreenElement &&
+            !document.webkitFullscreenElement &&
+            !document.msFullscreenElement) {
+            if (divObj.requestFullscreen) {
+                divObj.requestFullscreen();
+            } else if (divObj.msRequestFullscreen) {
+                divObj.msRequestFullscreen();
+            } else if (divObj.mozRequestFullScreen) {
+                divObj.mozRequestFullScreen();
+            } else if (divObj.webkitRequestFullscreen) {
+                divObj.webkitRequestFullscreen();
+            } else {
+                console.log("Fullscreen API is not supported");
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
+        }
+    }
+</script>
+@if (Model.ShowPrevious)
+{
+    <ul class="nav nav-pills float-left">
+        <li class="nav-item ml-auto">
+            <a class="nav-link" href="@previousUrl">Previous Episode</a>
+        </li>
+    </ul>
+}
+@if (Model.ShowNext)
+{
+    <ul class="nav nav-pills float-right">
+        <li class="nav-item mr-auto float-right">
+            <a class="nav-link" href="@nextUrl">Next Episode</a>
+        </li>
+    </ul>
+}
+<br />
+<br />
+<br />
+
+@foreach (var item in Model.EpisodeSources.Select((value, i) => new { i, value }))
+{
+    <div class="embed-responsive embed-responsive-16by9">
+        <video class="embed-responsive-item" controls ondblclick="makeFullScreen(this)" onclick="this.paused ? this.play() : this.pause();">
+            <source src="@item.value" />
+        </video>
+    </div>
+    <br />
+    <div class="form-group">
+        <input style="display:none; position: relative; left: -10000px;" type="text" value="@item.value" id="episodeSource" onclick="this.select()" />
+        <button class="btn btn-primary btn-sm" onclick="copyText()" type="button">Copy direct link</button>
+        <a class="btn btn-primary btn-sm" href="@item.value" download="@Model.AnimeTitle - @Model.EpisodeTitle">Download</a>
+    </div>
+}

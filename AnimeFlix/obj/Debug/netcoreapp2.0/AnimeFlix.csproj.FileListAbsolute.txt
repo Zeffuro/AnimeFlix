@@ -1,0 +1,14 @@
+c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\bin\Debug\netcoreapp2.0\AnimeFlix.deps.json
+c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\bin\Debug\netcoreapp2.0\AnimeFlix.runtimeconfig.json
+c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\bin\Debug\netcoreapp2.0\AnimeFlix.runtimeconfig.dev.json
+c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\bin\Debug\netcoreapp2.0\AnimeFlix.dll
+c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\bin\Debug\netcoreapp2.0\AnimeFlix.pdb
+c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\obj\Debug\netcoreapp2.0\AnimeFlix.csprojResolveAssemblyReference.cache
+c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\obj\Debug\netcoreapp2.0\AnimeFlix.csproj.CoreCompileInputs.cache
+c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\obj\Debug\netcoreapp2.0\AnimeFlix.AssemblyInfoInputs.cache
+c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\obj\Debug\netcoreapp2.0\AnimeFlix.AssemblyInfo.cs
+c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\obj\Debug\netcoreapp2.0\AnimeFlix.dll
+c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\obj\Debug\netcoreapp2.0\AnimeFlix.pdb
+C:\Users\Jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\bin\Debug\netcoreapp2.0\AnimeCrawler.dll
+C:\Users\Jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\bin\Debug\netcoreapp2.0\AnimeCrawler.pdb
+C:\Users\Jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeFlix\obj\Debug\netcoreapp2.0\UserSecretsAssemblyInfo.cs

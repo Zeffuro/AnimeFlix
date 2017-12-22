@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using LazyCache;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace AnimeFlix.Pages
 {
@@ -20,9 +19,9 @@ namespace AnimeFlix.Pages
         public string Anime { get; set; }
         public string Provider { get; set; }
 
-        public AnimeModel (CachingService cache)
+        public AnimeModel (IAppCache cache)
         {
-            _cache = new CachingService();
+            _cache = cache;
         }
 
         public void OnGet(string anime, string provider)
@@ -34,8 +33,7 @@ namespace AnimeFlix.Pages
             }
             Anime = anime;
             List<AnimeResult> SearchAnimeCached() => _crawler.SearchAnime(anime, provider);
-
-            //AnimeResults = !string.IsNullOrEmpty(anime) ? _crawler.SearchAnime(anime, provider) : new List<AnimeResult>();
+            
             AnimeResults = !string.IsNullOrEmpty(anime) ? _cache.GetOrAdd($"AnimeCrawler-SearchAnime-{anime}-{provider}", SearchAnimeCached) : new List<AnimeResult>();
         }
 

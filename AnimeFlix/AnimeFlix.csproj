@@ -4,6 +4,9 @@
     <UserSecretsId>aspnet-AnimeFlix-588921CF-D696-4284-8768-F8E7433A3A60</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Properties\PublishProfiles\FolderProfile.pubxml" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="LazyCache" Version="0.8.0.2-alpha-dotnet" />
     <PackageReference Include="malapi-wrapper" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
@@ -20,5 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 </Project>

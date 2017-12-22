@@ -46,7 +46,7 @@ namespace AnimeFlix.Pages
 
             List<EpisodeResult> RetrieveEpisodeCached() => _crawler.RetrieveEpisodeResults(AnimeResults[id], provider);
             EpisodeResults = !string.IsNullOrEmpty(anime)
-                ? _cache.GetOrAdd($"AnimeCrawler-RetrieveEpisodes-{anime}-{AnimeResults[id]}-{provider}", RetrieveEpisodeCached, _cacheItemPolicy)
+                ? _cache.GetOrAdd($"AnimeCrawler-RetrieveEpisodes-{anime}-{id}-{provider}", RetrieveEpisodeCached, _cacheItemPolicy)
                 : new List<EpisodeResult>();
         }
     }

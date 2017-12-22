@@ -47,7 +47,7 @@ namespace AnimeFlix.Pages
             AnimeResults = !string.IsNullOrEmpty(anime) ? _cache.GetOrAdd($"AnimeCrawler-SearchAnime-{anime}-{provider}", SearchAnimeCached, _cacheItemPolicy) : new List<AnimeResult>();
 
             List<EpisodeResult> RetrieveEpisodeCached() => _crawler.RetrieveEpisodeResults(AnimeResults[animeid], provider);
-            EpisodeResults = !string.IsNullOrEmpty(anime) ? _cache.GetOrAdd($"AnimeCrawler-RetrieveEpisodes-{anime}-{AnimeResults[animeid]}-{provider}", RetrieveEpisodeCached, _cacheItemPolicy) : new List<EpisodeResult>();
+            EpisodeResults = !string.IsNullOrEmpty(anime) ? _cache.GetOrAdd($"AnimeCrawler-RetrieveEpisodes-{anime}-{animeid}-{provider}", RetrieveEpisodeCached, _cacheItemPolicy) : new List<EpisodeResult>();
 
             AnimeTitle = AnimeResults[animeid].KitsuSearchResult.Attributes.CanonicalTitle;
             EpisodeTitle = EpisodeResults[episodeid].Title;

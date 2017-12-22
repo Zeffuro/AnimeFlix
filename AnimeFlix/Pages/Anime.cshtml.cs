@@ -13,6 +13,11 @@ namespace AnimeFlix.Pages
         private readonly Crawler _crawler = new Crawler();
         private readonly IAppCache _cache;
 
+        private readonly CacheItemPolicy _cacheItemPolicy = new CacheItemPolicy()
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
+        };
+
         public List<AnimeResult> AnimeResults;
         public List<EpisodeResult> EpisodeResults;
 
@@ -34,7 +39,7 @@ namespace AnimeFlix.Pages
             Anime = anime;
             List<AnimeResult> SearchAnimeCached() => _crawler.SearchAnime(anime, provider);
             
-            AnimeResults = !string.IsNullOrEmpty(anime) ? _cache.GetOrAdd($"AnimeCrawler-SearchAnime-{anime}-{provider}", SearchAnimeCached) : new List<AnimeResult>();
+            AnimeResults = !string.IsNullOrEmpty(anime) ? _cache.GetOrAdd($"AnimeCrawler-SearchAnime-{anime}-{provider}", SearchAnimeCached, _cacheItemPolicy) : new List<AnimeResult>();
         }
 
         public void SetCookie(string key, string value, int? expireTime)

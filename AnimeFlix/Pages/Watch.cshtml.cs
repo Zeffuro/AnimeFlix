@@ -1,13 +1,21 @@
-﻿using AnimeCrawler.Models;
+﻿using System;
+using AnimeCrawler.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using AnimeCrawler;
+using LazyCache;
 
 namespace AnimeFlix.Pages
 {
     public class WatchModel : PageModel
     {
         private readonly Crawler _crawler = new Crawler();
+        private readonly IAppCache _cache;
+
+        private readonly CacheItemPolicy _cacheItemPolicy = new CacheItemPolicy()
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
+        };
 
         public List<AnimeResult> AnimeResults;
         public List<EpisodeResult> EpisodeResults;
@@ -24,14 +32,22 @@ namespace AnimeFlix.Pages
         public bool ShowPrevious { get; set; }
         public bool ShowNext { get; set; }
 
+        public WatchModel(IAppCache cache)
+        {
+            _cache = cache;
+        }
+
         public void OnGet(string anime, int animeid, int episodeid, string provider)
         {
             Anime = anime;
             Provider = provider;
             AnimeId = animeid;
 
-            AnimeResults = !string.IsNullOrEmpty(anime) ? _crawler.SearchAnime(anime, provider) : new List<AnimeResult>();
-            EpisodeResults = !string.IsNullOrEmpty(anime) ? _crawler.RetrieveEpisodeResults(AnimeResults[animeid], provider) : new List<EpisodeResult>();
+            List<AnimeResult> SearchAnimeCached() => _crawler.SearchAnime(anime, provider);
+            AnimeResults = !string.IsNullOrEmpty(anime) ? _cache.GetOrAdd($"AnimeCrawler-SearchAnime-{anime}-{provider}", SearchAnimeCached, _cacheItemPolicy) : new List<AnimeResult>();
+
+            List<EpisodeResult> RetrieveEpisodeCached() => _crawler.RetrieveEpisodeResults(AnimeResults[animeid], provider);
+            EpisodeResults = !string.IsNullOrEmpty(anime) ? _cache.GetOrAdd($"AnimeCrawler-RetrieveEpisodes-{anime}-{AnimeResults[animeid]}-{provider}", RetrieveEpisodeCached, _cacheItemPolicy) : new List<EpisodeResult>();
 
             AnimeTitle = AnimeResults[animeid].KitsuSearchResult.Attributes.CanonicalTitle;
             EpisodeTitle = EpisodeResults[episodeid].Title;

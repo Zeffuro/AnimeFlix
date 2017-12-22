@@ -1,9 +1,0 @@
-c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeCrawler\bin\Debug\netcoreapp2.0\AnimeCrawler.deps.json
-c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeCrawler\bin\Debug\netcoreapp2.0\AnimeCrawler.dll
-c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeCrawler\obj\Debug\netcoreapp2.0\AnimeCrawler.csprojResolveAssemblyReference.cache
-c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeCrawler\obj\Debug\netcoreapp2.0\AnimeCrawler.csproj.CoreCompileInputs.cache
-c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeCrawler\obj\Debug\netcoreapp2.0\AnimeCrawler.AssemblyInfoInputs.cache
-c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeCrawler\obj\Debug\netcoreapp2.0\AnimeCrawler.AssemblyInfo.cs
-c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeCrawler\bin\Debug\netcoreapp2.0\AnimeCrawler.pdb
-c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeCrawler\obj\Debug\netcoreapp2.0\AnimeCrawler.dll
-c:\users\jeffro\documents\visual studio 2017\Projects\AnimeFlix\AnimeCrawler\obj\Debug\netcoreapp2.0\AnimeCrawler.pdb

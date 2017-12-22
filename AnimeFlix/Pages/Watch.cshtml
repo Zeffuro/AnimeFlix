@@ -7,15 +7,24 @@
     ViewData["Title"] = $"Watching {Model.AnimeTitle} - {Model.EpisodeTitle}";
     ViewData["Header"] = Model.EpisodeTitle;
     ViewData["Breadcrumbs"] = new Dictionary<string, string>
-    {
-        {"Anime", "Anime"},
-        {Model.AnimeTitle, $"Episodes?anime={Uri.EscapeDataString(Model.Anime)}&id={Model.AnimeId}&provider={Model.Provider}"},
-        {Model.EpisodeTitle, ""}
-    };
+{
+{"Anime", "Anime"},
+{Model.AnimeTitle, $"Episodes?anime={Uri.EscapeDataString(Model.Anime)}&id={Model.AnimeId}&provider={Model.Provider}"},
+{Model.EpisodeTitle, ""}
+};
 
     var previousUrl = Regex.Replace(HttpContext.Request.GetDisplayUrl(), "episodeid=.*?&", $"episodeid={Model.EpisodePrev}&");
     var nextUrl = Regex.Replace(HttpContext.Request.GetDisplayUrl(), "episodeid=.*?&", $"episodeid={Model.EpisodeNext}&");
 }
+<style>
+    #overlay {
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 0;
+    }
+    #video{
+        z-index: 999
+    }
+</style>
 <script>
     function copyText() {
         var text = document.getElementById("episodeSource");
@@ -24,6 +33,10 @@
         document.execCommand('SelectAll');
         document.execCommand("Copy", false, null);
         text.style.display = 'none';
+    }
+
+    function toggleDimmer() {
+        $("#overlay").toggle();
     }
 
     function makeFullScreen(divObj) {
@@ -74,18 +87,19 @@
 <br />
 <br />
 <br />
-
+<div id="overlay" onclick="toggleDimmer();" style="display: none; position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 0;"></div>
 @foreach (var item in Model.EpisodeSources.Select((value, i) => new { i, value }))
 {
     <div class="embed-responsive embed-responsive-16by9">
-        <video class="embed-responsive-item" controls ondblclick="makeFullScreen(this)" onclick="this.paused ? this.play() : this.pause();">
+        <video style="z-index: 999;" class="embed-responsive-item" controls ondblclick="makeFullScreen(this)" onclick="this.paused ? this.play() : this.pause();">
             <source src="@item.value" />
         </video>
     </div>
     <br />
-    <div class="form-group">
+    <div style="z-index: 999;" class="form-group">
         <input style="display:none; position: relative; left: -10000px;" type="text" value="@item.value" id="episodeSource" onclick="this.select()" />
         <button class="btn btn-primary btn-sm" onclick="copyText()" type="button">Copy direct link</button>
         <a class="btn btn-primary btn-sm" href="@item.value" download="@Model.AnimeTitle - @Model.EpisodeTitle">Download</a>
+        <a class="btn btn-primary btn-sm" onclick="toggleDimmer();" href="#">Lights off</a>
     </div>
 }

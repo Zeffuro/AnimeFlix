@@ -2,9 +2,10 @@
 using CsQuery;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using AnimeCrawler.Helpers;
+using CloudFlareUtilities;
 
 namespace AnimeCrawler.Providers
 {
@@ -12,8 +13,14 @@ namespace AnimeCrawler.Providers
     {
         private const string BaseUri = "https://animedao.com";
         private const string SearchString = "/search/?key={0}";
-        private readonly WebClient _client = new WebClient();
         private readonly Kitsu _kitsu = new Kitsu();
+
+        private static readonly ClearanceHandler CloudflareHandler = new ClearanceHandler
+        {
+            MaxRetries = 2 // Optionally specify the number of retries, if clearance fails (default is 3).
+        };
+
+        private readonly HttpClient _cloudHttpClient = new HttpClient(CloudflareHandler);
 
         public string Name { get; set; }
 
@@ -24,7 +31,7 @@ namespace AnimeCrawler.Providers
 
         public List<AnimeResult> SearchAnime(string query)
         {
-            var html = _client.DownloadString(BaseUri + string.Format(SearchString, query));
+            var html = _cloudHttpClient.GetStringAsync(BaseUri + string.Format(SearchString, query)).Result;
             var dom = CQ.CreateDocument(html);
             var results = dom.Select(".animelist_poster")
                 .Select(element => new AnimeResult
@@ -40,7 +47,7 @@ namespace AnimeCrawler.Providers
 
         public List<EpisodeResult> RetrieveEpisodeResults(AnimeResult animeResult)
         {
-            var html = _client.DownloadString(BaseUri + animeResult.PageUrl);
+            var html = _cloudHttpClient.GetStringAsync(BaseUri + animeResult.PageUrl).Result;
             var dom = CQ.CreateDocument(html);
             var results = dom.Select(".animeinfo-content")
                 .Select(element => new EpisodeResult
@@ -55,9 +62,11 @@ namespace AnimeCrawler.Providers
 
         public List<string> RetrieveVideoSource(EpisodeResult episodeResult)
         {
-            var html = _client.DownloadString(BaseUri + episodeResult.PageUrl);
+            var html = _cloudHttpClient.GetStringAsync(BaseUri + episodeResult.PageUrl).Result;
             var file = new Regex("file: \"(?<File>.*?)\"").Matches(html)[0].Groups["File"].Value;
-            var results = new List<string> { BaseUri + file };
+            var resolveUrl = _cloudHttpClient.GetAsync(BaseUri + file, HttpCompletionOption.ResponseHeadersRead).Result;
+            resolveUrl.EnsureSuccessStatusCode();
+            var results = new List<string> { resolveUrl.RequestMessage.RequestUri.ToString() };
             return results;
         }
     }

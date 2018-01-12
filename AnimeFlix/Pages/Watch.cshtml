@@ -67,6 +67,8 @@
             }
         }
     }
+
+    document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
 </script>
 @if (Model.ShowPrevious)
 {
@@ -91,7 +93,7 @@
 @foreach (var item in Model.EpisodeSources.Select((value, i) => new { i, value }))
 {
     <div class="embed-responsive embed-responsive-16by9">
-        <video style="z-index: 999;" class="embed-responsive-item" controls ondblclick="makeFullScreen(this)" onclick="this.paused ? this.play() : this.pause();">
+        <video id="videosource" style="z-index: 999;" class="embed-responsive-item" controls ondblclick="makeFullScreen(this)" onclick="this.paused ? this.play() : this.pause();">
             <source src="@item.value" />
         </video>
     </div>
@@ -103,3 +105,11 @@
         <a class="btn btn-primary btn-sm" onclick="toggleDimmer();" href="#">Lights off</a>
     </div>
 }
+<script>
+    var video = document.getElementById("videosource");
+    document.onkeypress = function(e){
+        if((e || window.event).keyCode === 32){
+            video.paused ? video.play() : video.pause();
+        }
+    };
+</script>

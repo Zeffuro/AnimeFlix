@@ -15,8 +15,8 @@
         @{
             var options = new List<SelectListItem>
             {
-                new SelectListItem {Text = "AnimeDao", Value = "AnimeDao", Selected = HttpContext.Request.Cookies["AnimeProvider"] == "AnimeDao"},
-                new SelectListItem {Text = "AnimeTwist", Value = "AnimeTwist", Selected = HttpContext.Request.Cookies["AnimeProvider"] == "AnimeTwist"}
+                new SelectListItem {Text = "AnimeTwist", Value = "AnimeTwist", Selected = HttpContext.Request.Cookies["AnimeProvider"] == "AnimeTwist"},
+                new SelectListItem {Text = "AnimeDao", Value = "AnimeDao", Selected = HttpContext.Request.Cookies["AnimeProvider"] == "AnimeDao"}        
             };
         }
         <label class="custom-control">@Html.DropDownList("provider", options, new {@class = "custom-select form-control-sm"})</label>

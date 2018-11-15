@@ -12,7 +12,7 @@ namespace AnimeCrawlerConsole
             Console.WriteLine("Hello World!");
 
             var crawler = new Crawler();
-            var provider = "NineAnime";
+            var provider = "GoGoAnime";
 
             var animeResults = crawler.SearchAnime("bleach", provider);
 

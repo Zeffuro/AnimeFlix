@@ -11,6 +11,8 @@ namespace AnimeCrawler
         {
             ["AnimeDao"] = new AnimeDao(),
             ["AnimeTwist"] = new AnimeTwist(),
+            ["GoGoAnime"] = new GoGoAnime(),
+            ["EyeOnAnime"] = new EyeOnAnime(),
             ["NineAnime"] = new NineAnime() //Currently Broken
         };
 

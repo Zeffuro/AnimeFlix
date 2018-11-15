@@ -2,6 +2,7 @@
 using AnimeCrawler.Models;
 using CsQuery;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -10,11 +11,12 @@ using AnimeCrawler.Helpers;
 
 namespace AnimeCrawler.Providers
 {
-    public class NineAnime : AnimeProviderInterface.IAnimeProvider
+    public class GoGoAnime : AnimeProviderInterface.IAnimeProvider
     {
-        private const string BaseUri = "https://9anime.bz";
-        private const string SearchString = "/search?keyword={0}";
-        private const string SearchPageString = "/search?keyword={0}&page={1}";
+        private const string BaseUri = "https://www.gogoanimes.co";
+        private const string SearchString = "/search.html?keyword={0}";
+        private const string SearchPageString = "/search.html?keyword={0}&page={1}";
+        private const string EpisodeLookupApi = "https://api.watchanime.cc/ajax/load-list-episode?ep_start=0&ep_end=999999&id={0}";
 
         private readonly WebClient _client = new WebClient();
         private readonly Kitsu _kitsu = new Kitsu();
@@ -22,9 +24,9 @@ namespace AnimeCrawler.Providers
 
         public string Name { get; set; }
 
-        public NineAnime()
+        public GoGoAnime()
         {
-            Name = "NineAnime";
+            Name = "GoGoAnime";
         }
 
         public List<AnimeResult> SearchAnime(string query)
@@ -33,21 +35,21 @@ namespace AnimeCrawler.Providers
             var dom = CQ.CreateDocument(html);
 
             var results = new List<AnimeResult>();
-            if (!string.IsNullOrEmpty(dom.Select(".total").Text()))
+            if (!string.IsNullOrEmpty(dom.Select(".pagination-list li").Text()))
             {
-                var totalPages = Convert.ToInt32(dom.Select(".total").Text());
+                var totalPages = Convert.ToInt32(dom.Select(".pagination-list li").Last().Text());
 
                 for (var page = 1; page <= totalPages; page++)
                 {
                     var pageHtml = _client.DownloadString(BaseUri + string.Format(SearchPageString, query, page));
                     var pageDom = CQ.CreateDocument(pageHtml);
 
-                    results.AddRange(pageDom.Select("div.item")
+                    results.AddRange(pageDom.Select(".items li")
                         .Select(element => new AnimeResult
                         {
                             Name = element.Cq().Find(".name").Text(),
                             CoverUrl = element.Cq().Find("img").Attr("src"),
-                            PageUrl = element.Cq().Find(".name").Attr("href"),
+                            PageUrl = BaseUri + element.Cq().Find("a").Attr("href"),
                             KitsuSearchResult = _kitsu.SearchAnime(element.Cq().Find(".name").Text()).Data?.First()
                         })
                         .ToList());
@@ -55,12 +57,12 @@ namespace AnimeCrawler.Providers
             }
             else
             {
-                results = dom.Select("div.item")
+                results = dom.Select(".items li")
                     .Select(element => new AnimeResult
                     {
                         Name = element.Cq().Find(".name").Text(),
                         CoverUrl = element.Cq().Find("img").Attr("src"),
-                        PageUrl = element.Cq().Find(".name").Attr("href"),
+                        PageUrl = BaseUri + element.Cq().Find("a").Attr("href"),
                         KitsuSearchResult = _kitsu.SearchAnime(element.Cq().Find(".name").Text()).Data?.First()
                     })
                     .ToList();
@@ -73,21 +75,24 @@ namespace AnimeCrawler.Providers
         {
             var html = _client.DownloadString(animeResult.PageUrl);
             var dom = CQ.CreateDocument(html);
-            var results = dom.Select("label:contains('RapidVideo')").Next().Find("a")
+            var animeId = dom.Select("input#movie_id").Val();
+            var episodeListHtml = _client.DownloadString(string.Format(EpisodeLookupApi, animeId));
+            dom = CQ.CreateDocument(episodeListHtml);
+            var results = dom.Select("li")
                 .Select(element => new EpisodeResult
-                    {
-                        Title = element.Cq().Attr("data-base"),
-                        PageUrl = element.Cq().Attr("href")
-                }
-                ).ToList();
+                {
+                    Title = element.Cq().Find(".name").Text().Trim(),
+                    PageUrl = BaseUri + element.Cq().Find("a").Attr("href").Trim()
+                })
+                .ToList();
             return results;
         }
 
         public List<string> RetrieveVideoSource(EpisodeResult episodeResult)
         {
-            var html = _client.DownloadString(BaseUri + episodeResult.PageUrl);
+            var html = _client.DownloadString(episodeResult.PageUrl);
             var dom = CQ.CreateDocument(html);
-            var rapidVideo = dom.Select("#player > iframe").Attr("src");
+            var rapidVideo = dom.Select(".rapidvideo a").Attr("data-video");
             var result = _rapidVideo.GetVideoSource(rapidVideo);
             var results = new List<string> { result };
             return results;

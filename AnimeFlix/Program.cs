@@ -14,6 +14,11 @@ namespace AnimeFlix
         {
             return WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                //.UseKestrel(options =>
+                //{
+                //    options.UseHttps(path, "CertificatePassword")
+                //        .UseConnectionLogging();
+                //})
                 .UseUrls("http://*:5000")
                 .Build();
         }
